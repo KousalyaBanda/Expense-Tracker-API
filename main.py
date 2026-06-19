@@ -35,3 +35,18 @@ def create_expense(
 @app.get("/expenses")
 def get_expenses(db: Session = Depends(get_db)):
     return crud.get_expenses(db)
+@app.put("/expenses/{expense_id}")
+def update_expense(
+        expense_id: int,
+        expense: schemas.ExpenseCreate,
+        db: Session = Depends(get_db)
+):
+    return crud.update_expense(db, expense_id, expense)
+
+
+@app.delete("/expenses/{expense_id}")
+def delete_expense(
+        expense_id: int,
+        db: Session = Depends(get_db)
+):
+    return crud.delete_expense(db, expense_id)
