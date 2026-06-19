@@ -24,7 +24,7 @@ def home():
     return {"message": "Expense Tracker API is running successfully"}
 
 
-@app.post("/expenses")
+@app.post("/expenses", response_model=schemas.ExpenseResponse)
 def create_expense(
         expense: schemas.ExpenseCreate,
         db: Session = Depends(get_db)
@@ -32,7 +32,7 @@ def create_expense(
     return crud.create_expense(db, expense)
 
 
-@app.get("/expenses")
+@app.get("/expenses",response_model=list[schemas.ExpenseResponse])
 def get_expenses(db: Session = Depends(get_db)):
     return crud.get_expenses(db)
 

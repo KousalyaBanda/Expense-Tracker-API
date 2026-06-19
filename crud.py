@@ -18,12 +18,15 @@ def get_expenses(db: Session):
 def update_expense(db: Session, expense_id: int, expense: ExpenseCreate):
     db_expense = db.query(Expense).filter(Expense.id == expense_id).first()
 
-    if db_expense:
-        db_expense.title = expense.title
-        db_expense.amount = expense.amount
-        db_expense.category = expense.category
-        db.commit()
-        db.refresh(db_expense)
+   if not db_expense:
+        raise HTTPException(status_code=404, detail="Expense not found")
+
+    db_expense.title = expense.title
+    db_expense.amount = expense.amount
+    db_expense.category = expense.category
+
+    db.commit()
+    db.refresh(db_expense)
 
     return db_expense
 
@@ -31,8 +34,10 @@ def update_expense(db: Session, expense_id: int, expense: ExpenseCreate):
 def delete_expense(db: Session, expense_id: int):
     db_expense = db.query(Expense).filter(Expense.id == expense_id).first()
 
-    if db_expense:
+    if not db_expense:
+        raise HTTPException(status_code=404, detail="Expense not found")
         db.delete(db_expense)
         db.commit()
+        db.refresh(db_expense)
 
     return db_expense
